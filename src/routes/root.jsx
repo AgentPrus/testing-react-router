@@ -1,21 +1,13 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function Root() {
   return (
-    <div>
-      <nav>
-        <ul>
-          <li>
-            <NavLink to="/about">About</NavLink>
-          </li>
-          <li>
-            <NavLink to="/contact">Contact</NavLink>
-          </li>
-        </ul>
-      </nav>
+    <>
+      <Navbar />
       <main>
         <Outlet />
       </main>
-    </div>
+    </>
   );
 }

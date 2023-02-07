@@ -3,6 +3,7 @@ import NoMatch from "../pages/404";
 
 import About from "../pages/About";
 import Contact from "../pages/Contact";
+import Profile from "../pages/Profile";
 import Root from "./root";
 
 export const routes = [
@@ -19,6 +20,10 @@ export const routes = [
       {
         path: "/contact",
         element: <Contact />,
+      },
+      {
+        path: "/user/:id",
+        element: <Profile />,
       },
     ],
   },

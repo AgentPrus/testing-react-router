@@ -1,6 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
+import { mockedResponse } from "../mocks/handlers";
 
 import { routes } from "./routes";
 
@@ -18,10 +23,40 @@ describe("Root component", () => {
   it("full app rendering/navigating", async () => {
     render(<RouterProvider router={router} />);
 
-    expect(screen.getByText("Home Page")).toBeInTheDocument();
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-    await user.click(screen.getByRole("link", { name: /about/i }));
+    expect(screen.getAllByTestId("user")).toHaveLength(mockedResponse.length);
+  });
 
-    expect(screen.getByText("About page")).toBeInTheDocument();
+  it("should allow user use navigation", async () => {
+    render(<RouterProvider router={router} />);
+
+    const navLink = screen.getByText(/about/i);
+
+    // Go to about page
+    await user.click(navLink);
+
+    expect(screen.getByText(/about page/i)).toBeInTheDocument();
+  });
+
+  it("should allow user see user details", async () => {
+    const fullName =
+      mockedResponse[0].firstName + " " + mockedResponse[0].lastName;
+    render(<RouterProvider router={router} />);
+
+    const navLink = screen.getByText(/home/i);
+
+    // Come back to home page
+    await user.click(navLink);
+
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+
+    const userLink = screen.getByRole("link", {
+      name: new RegExp(mockedResponse[0].firstName, "i"),
+    });
+
+    await user.click(userLink);
+
+    expect(screen.getByText(fullName)).toBeInTheDocument();
   });
 });
